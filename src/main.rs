@@ -8,37 +8,36 @@ fn main() {
     let args = App::new("rtree")
         .version("0.1")
         .arg(Arg::with_name("path").help("Directory path").required(false).index(1))
-        // .arg(Arg::with_name("all")
-        //          .short("a")
-        //          .takes_value(false)
-        //          .help("show all files")
-        //          .required(false)
-        //          .index(2))
         .get_matches();
-    let mut path = args.value_of("path").unwrap_or("./");
-    // let show_all = args.value_of("all").unwrap_or("false");
-    dir_list(path, 0);
+    let path = args.value_of("path").unwrap_or("./");
+
+    println!("Path: {}", path);
+    dir_list(path, 1, 1);
 }
 
 
-fn dir_list(dir: &str, level: usize) {
+fn dir_list(dir: &str, level: usize, parent_level: usize) {
     let paths = fs::read_dir(dir).unwrap();
-    let ch = "--";
+
+
+    let ch = "─";
+    if level == 1 {}
     for path in paths {
-        let dir = path.unwrap();
-        if is_dir(&dir) {
-            let dirname = get_file_name(&dir, false);
-            if dirname.starts_with(".") {
-                continue;
-            }
-            print!("{:>level$}", "", level = level);
-            println!("|{ch} {dirname}", ch = ch, dirname = dirname);
-            let filename = get_file_name(&dir, true);
-            dir_list(&filename, level + 4);
+        let full_path = path.unwrap();
+
+        if get_file_name(&full_path, false).starts_with(".") {
+            continue;
+        }
+
+        for i in 0..parent_level {
+            print!("{:>level$}▕", "", level = (i + 2));
+        }
+        let filename = get_file_name(&full_path, false);
+        if is_dir(&full_path) {
+            println!("{ch} {filename}", ch = ch, filename = filename);
+            dir_list(&full_path.path().to_str().unwrap(), level + 1, level);
         } else {
-            let filename = get_file_name(&dir, false);
-            print!("{:>level$}", "", level = level);
-            println!("|{ch} {d}", ch = ch, d = filename);
+            println!("{ch} {d}", ch = ch, d = filename);
         }
     }
 }
