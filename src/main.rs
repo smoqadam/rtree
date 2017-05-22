@@ -12,11 +12,11 @@ fn main() {
     let path = args.value_of("path").unwrap_or("./");
 
     println!("Path: {}", path);
-    dir_list(path, 1, 1);
+    dir_list(path, 1);
 }
 
 
-fn dir_list(dir: &str, level: usize, parent_level: usize) {
+fn dir_list(dir: &str, level: usize) {
     let paths = fs::read_dir(dir).unwrap();
 
 
@@ -29,13 +29,13 @@ fn dir_list(dir: &str, level: usize, parent_level: usize) {
             continue;
         }
 
-        for i in 0..parent_level {
+        for i in 0..level {
             print!("{:>level$}▕", "", level = (i + 2));
         }
         let filename = get_file_name(&full_path, false);
         if is_dir(&full_path) {
             println!("{ch} {filename}", ch = ch, filename = filename);
-            dir_list(&full_path.path().to_str().unwrap(), level + 1, level);
+            dir_list(&full_path.path().to_str().unwrap(), level + 1);
         } else {
             println!("{ch} {d}", ch = ch, d = filename);
         }

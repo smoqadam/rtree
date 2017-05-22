@@ -2,6 +2,9 @@
 name = "rtree"
 version = "0.1.0"
 authors = ["smoqadam <phpro.ir@gmail.com>"]
+description=" Directory tree structure written in Rust "
+license="MIT"
+repository="https://github.com/smoqadam/rtree"
 
 [dependencies]
 clap="2.23.2"
